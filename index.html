@@ -706,11 +706,7 @@
     // Live Clock
     function updateClock() { 
       const now = new Date(); 
-      const day = String(now.getDate()).padStart(2, '0'); 
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const year = now.getFullYear(); 
-      const formattedDate = \`${day}/${month}/${year}\`; 
-      document.getElementById("clock").innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " | " + formattedDate;
+      document.getElementById("clock").innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " | " + now.toLocaleDateString(); 
     }
 
     // Render Current Slide based on Entry Type
