@@ -547,10 +547,10 @@
     <div class="header-controls">
       <div class="time-display" id="clock">--:--:--</div>
       <button class="btn btn-outline" id="fullscreenBtn" onclick="toggleFullScreen()">
-        Full Screen Display
+        &x26F6; Full Screen Display
       </button>
       <button class="btn btn-gold" onclick="openAdminModal()">
-        Warder / Admin Access
+        &x1F512; Warder / Admin Access
       </button>
     </div>
   </header>
@@ -704,9 +704,9 @@
     }
 
     // Live Clock
-    function updateClock() { 
-      const now = new Date(); 
-      document.getElementById("clock").innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " | " + now.toLocaleDateString(); 
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " | " + now.toLocaleDateString();
     }
 
     // Render Current Slide based on Entry Type
