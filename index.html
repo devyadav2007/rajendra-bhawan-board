@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rajendra Bhawan - Digital Notice Board | IIT Roorkee</title>
+  <style>
+    :root {
+      --iitr-navy: #002147;
+      --iitr-navy-dark: #001530;
+      --iitr-gold: #d4af37;
+      --iitr-gold-light: #f4e8c1;
+      --bg-gray: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-dark: #1a1a1a;
+      --text-muted: #555555;
+      --danger: #dc3545;
+      --success: #198754;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-gray);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Header Section */
+    header {
+      background: linear-gradient(135deg, var(--iitr-navy-dark), var(--iitr-navy));
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-bottom: 4px solid var(--iitr-gold);
+    }
+
+    .branding {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .crest {
+      width: 55px;
+      height: 55px;
+      background-color: var(--iitr-gold);
+      color: var(--iitr-navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      border: 2px solid white;
+      letter-spacing: 1px;
+    }
+
+    .title-block h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .title-block p {
+      font-size: 0.85rem;
+      color: var(--iitr-gold-light);
+      letter-spacing: 0.3px;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .time-display {
+      text-align: right;
+      font-size: 0.9rem;
+      color: #e0e0e0;
+      padding-right: 1rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn {
+      padding: 0.55rem 1.1rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-gold {
+      background-color: var(--iitr-gold);
+      color: var(--iitr-navy-dark);
+    }
+
+    .btn-gold:hover {
+      background-color: #c29d29;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Main Display Container */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Countdown Progress Bar */
+    .progress-container {
+      width: 100%;
+      max-width: 1100px;
+      height: 6px;
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--iitr-navy), var(--iitr-gold));
+      transition: width 0.1s linear;
+    }
+
+    /* Notice Slide Card */
+    .notice-card {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 1100px;
+      min-height: 540px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header-stripe {
+      background-color: var(--iitr-navy);
+      padding: 1rem 2.5rem;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-tag {
+      background-color: var(--iitr-gold);
+      color: var(--iitr-navy-dark);
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .slide-counter {
+      font-size: 0.85rem;
+      color: var(--iitr-gold-light);
+    }
+
+    /* Header Image/Poster Container */
+    .header-poster-container {
+      width: 100%;
+      max-height: 220px;
+      overflow: hidden;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 3px solid var(--iitr-gold);
+    }
+
+    .header-poster-container img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 2.2rem 2.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notice-title {
+      font-size: 2rem;
+      color: var(--iitr-navy);
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+      border-bottom: 2px solid var(--iitr-gold-light);
+      padding-bottom: 0.5rem;
+    }
+
+    .notice-meta {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .notice-content {
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: #2c2c2c;
+      flex: 1;
+      white-space: pre-line;
+    }
+
+    /* Resume / Biodata Layout */
+    .biodata-layout {
+      display: flex;
+      gap: 2.5rem;
+      align-items: flex-start;
+      height: 100%;
+    }
+
+    .biodata-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      background: #f8f9fc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .biodata-photo {
+      width: 160px;
+      height: 190px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 4px solid var(--iitr-navy);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      background-color: #e9ecef;
+    }
+
+    .biodata-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--iitr-navy);
+      margin-bottom: 0.3rem;
+    }
+
+    .biodata-role {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--iitr-gold);
+      background-color: var(--iitr-navy);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 0.8rem;
+    }
+
+    .biodata-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .bio-section {
+      background: #ffffff;
+      padding: 1rem 1.2rem;
+      border-left: 4px solid var(--iitr-navy);
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .bio-section h4 {
+      font-size: 1.05rem;
+      color: var(--iitr-navy);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bio-section p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #333;
+      white-space: pre-line;
+    }
+
+    .card-footer {
+      background-color: #f4f6f9;
+      padding: 0.9rem 2.5rem;
+      border-top: 1px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Slider Navigation Controls */
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .indicator-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #ccc;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .dot.active {
+      background-color: var(--iitr-navy);
+      width: 28px;
+      border-radius: 6px;
+    }
+
+    /* Full Screen / Kiosk Mode Styles */
+    body.is-fullscreen header {
+      display: none;
+    }
+
+    body.is-fullscreen main {
+      padding: 0;
+      height: 100vh;
+      justify-content: center;
+      background-color: #0b1426;
+    }
+
+    body.is-fullscreen .progress-container {
+      max-width: 100%;
+      border-radius: 0;
+      margin-bottom: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 8px;
+    }
+
+    body.is-fullscreen .notice-card {
+      max-width: 94vw;
+      height: 90vh;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    body.is-fullscreen .nav-controls {
+      display: none;
+    }
+
+    .kiosk-exit-hint {
+      display: none;
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    body.is-fullscreen .kiosk-exit-hint {
+      display: block;
+    }
+
+    /* Modal / Admin Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      background: var(--iitr-navy);
+      color: white;
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    textarea.form-control {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .image-preview-container {
+      margin-top: 0.5rem;
+      max-height: 120px;
+      display: none;
+    }
+
+    .image-preview-container img {
+      max-height: 110px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    .notice-item-list {
+      margin-top: 1.5rem;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+    }
+
+    .notice-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.78rem;
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .badge-type {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #333;
+      margin-right: 0.4rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="branding">
+      <div class="crest">IITR</div>
+      <div class="title-block">
+        <h1>Rajendra Bhawan</h1>
+        <p>Indian Institute of Technology Roorkee &bull; Official Digital Notice Board</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <div class="time-display" id="clock">--:--:--</div>
+      <button class="btn btn-outline" id="fullscreenBtn" onclick="toggleFullScreen()">
+        Full Screen Display
+      </button>
+      <button class="btn btn-gold" onclick="openAdminModal()">
+        Warder / Admin Access
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Notice Display Container -->
+  <main>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="notice-card" id="noticeCard">
+      <!-- Dynamically filled by JS -->
+    </div>
+
+    <!-- Navigation Dots and Manual Controls -->
+    <div class="nav-controls">
+      <button class="btn btn-secondary btn-sm" onclick="prevSlide()">&laquo; Previous</button>
+      <div class="indicator-dots" id="indicatorDots"></div>
+      <button class="btn btn-secondary btn-sm" onclick="nextSlide()">Next &raquo;</button>
+    </div>
+  </main>
+
+  <div class="kiosk-exit-hint">Press <strong>ESC</strong> or click top-right to exit Full Screen mode</div>
+
+  <!-- Admin Password Verification Modal -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Warder Authentication Required</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('passwordModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #555;">
+          Access restricted to Warders, Assistant Warders, and authorized Bhawan Council members.
+        </p>
+        <div class="form-group">
+          <label for="adminPassword">Enter Admin Password:</label>
+          <input type="password" id="adminPassword" class="form-control" placeholder="Default: rajendra123" />
+        </div>
+        <div id="passwordError" style="color: var(--danger); font-size: 0.85rem; margin-bottom: 1rem; display: none;">
+          Incorrect Password. Access Denied.
+        </div>
+        <button class="btn btn-gold" style="width: 100%;" onclick="verifyPassword()">Verify & Access Panel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Management Panel Modal -->
+  <div class="modal-overlay" id="adminPanelModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Rajendra Bhawan - Content Management</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('adminPanelModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 id="formHeaderTitle" style="color: var(--iitr-navy); margin-bottom: 1rem;">Add New Entry</h4>
+        <input type="hidden" id="editNoticeId" value="" />
+        
+        <!-- Entry Type Selector Menu -->
+        <div class="form-group">
+          <label style="color: var(--iitr-navy); font-weight: 700;">Select Entry Type:</label>
+          <select id="inputEntryType" class="form-control" onchange="handleEntryTypeChange()" style="border: 2px solid var(--iitr-gold);">
+            <option value="notice">1. Official Notice (Text & Optional Image)</option>
+            <option value="event">2. Event Information (With Header Poster/Banner)</option>
+            <option value="biodata">3. Official Biodata / Profile (Resume Layout + Photo)</option>
+          </select>
+        </div>
+
+        <!-- Dynamic Fields Container -->
+        <div id="dynamicFields">
+          <!-- Fields rendered dynamically via JS based on type -->
+        </div>
+
+        <!-- Image Upload Field (Promoted based on type) -->
+        <div class="form-group" id="imageUploadGroup">
+          <label id="imageUploadLabel">Upload Image / Photo / Poster:</label>
+          <input type="file" id="inputImage" class="form-control" accept="image/*" onchange="previewImage(this)" />
+          <small id="imageHelpText" style="color: #666; font-size: 0.8rem;"></small>
+          <div class="image-preview-container" id="previewBox">
+            <img id="previewImg" src="" alt="Preview" />
+            <button type="button" class="btn btn-danger btn-sm" style="margin-top: 4px;" onclick="removeImage()">Remove Image</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem;">
+          <button class="btn btn-gold" id="saveNoticeBtn" onclick="saveNotice()">Save & Publish Slide</button>
+          <button class="btn btn-secondary" id="cancelEditBtn" onclick="resetForm()" style="display: none;">Cancel Edit</button>
+        </div>
+
+        <h4 style="color: var(--iitr-navy); margin-bottom: 0.5rem;">Published Slides List</h4>
+        <div class="notice-item-list" id="adminNoticeList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    // Sample Initial Data representing Notice, Event, and Biodata types
+    const defaultNotices = [
+      {
+        id: 1,
+        entryType: "event",
+        category: "Upcoming Event",
+        title: "Rajendra Bhawan Annual Cultural Night 2026",
+        meta: "Date: 18th October 2026 | Venue: Main Quadrangle",
+        content: "• Join us for an evening of music, drama, and dining!\n• Chief Guest: Dean of Student Welfare, IIT Roorkee.\n• Food stalls and live performances start at 6:30 PM.\n• All residents are cordially invited with college ID cards.",
+        imageData: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='200' viewBox='0 0 800 200'><rect width='100%' height='100%' fill='%23002147'/><text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='%23d4af37' font-family='sans-serif' font-size='28' font-weight='bold'>RAJENDRA BHAWAN CULTURAL NIGHT</text><text x='50%' y='70%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='18'>GRAND CELEBRATION &bull; IIT ROORKEE</text></svg>"
+      },
+      {
+        id: 2,
+        entryType: "biodata",
+        category: "Official Biodata",
+        title: "Dr. A. K. Sharma",
+        role: "Chief Warden",
+        meta: "Office: Chief Warden Room, Ground Floor",
+        bioSummary: "Ph.D. in Structural Engineering (IIT Roorkee)\nAssociated with Rajendra Bhawan since 2021.\nOversees Bhawan administration, resident welfare, and infrastructure maintenance.",
+        contactInfo: "• Email: chiefwarden.rb@iitr.ac.in\n• Phone: +91 1332 281234\n• Interaction Hours: Mon & Thu (5:00 PM - 6:30 PM)",
+        imageData: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='190' viewBox='0 0 160 190'><rect width='100%' height='100%' fill='%23002147'/><circle cx='80' cy='70' r='35' fill='%23d4af37'/><path d='M30 160 C30 120, 130 120, 130 160 Z' fill='%23d4af37'/><text x='50%' y='180%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='12'>CHIEF WARDEN</text></svg>"
+      },
+      {
+        id: 3,
+        entryType: "notice",
+        category: "Emergency & Official Notice",
+        title: "Hostel Discipline & Emergency Desk Numbers",
+        meta: "Issued by: Warden Office | Rajendra Bhawan",
+        content: "• Emergency Control Desk: +91 1332 285678 / Ext. 4321\n• IIT Roorkee Hospital Emergency: +91 1332 285201\n• All maintenance complaints must be logged online before 2:00 PM daily.\n• Silence hours enforced in all corridors from 11:00 PM to 6:00 AM.",
+        imageData: ""
+      }
+    ];
+
+    // App State
+    let notices = JSON.parse(localStorage.getItem("rajendra_notices_v2")) || defaultNotices;
+    let currentIndex = 0;
+    let slideInterval = null;
+    let progressTimer = null;
+    let currentBase64Image = "";
+    const SLIDE_DURATION = 15000; // 15 Seconds
+    const ADMIN_PASS = "rajendra123";
+
+    // DOM Elements
+    const noticeCard = document.getElementById("noticeCard");
+    const progressBar = document.getElementById("progressBar");
+    const indicatorDots = document.getElementById("indicatorDots");
+
+    // Initialize App
+    function init() {
+      updateClock();
+      setInterval(updateClock, 1000);
+      renderNotice();
+      startAutoSlide();
+    }
+
+    // Live Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " | " + now.toLocaleDateString();
+    }
+
+    // Render Current Slide based on Entry Type
+    function renderNotice() {
+      if (notices.length === 0) {
+        noticeCard.innerHTML = `
+          <div class="card-header-stripe">
+            <span class="category-tag">Notice Board Empty</span>
+            <span class="slide-counter">0 of 0</span>
+          </div>
+          <div class="card-body">
+            <h2 class="notice-title">No Active Notices</h2>
+            <div class="notice-meta">Authorized Warder login required</div>
+            <div class="notice-content">Log in via Warder Access to add Official Notices, Event Posters, or Biodata profiles.</div>
+          </div>`;
+        renderDots();
+        resetProgressBar();
+        return;
+      }
+
+      const notice = notices[currentIndex];
+
+      // Header Stripe
+      const headerStripe = `
+        <div class="card-header-stripe">
+          <span class="category-tag">${notice.category || notice.entryType.toUpperCase()}</span>
+          <span class="slide-counter">Slide ${currentIndex + 1} of ${notices.length}</span>
+        </div>`;
+
+      const cardFooter = `
+        <div class="card-footer">
+          <span>&bull; Rajendra Bhawan, IIT Roorkee &bull; Warder Supervision</span>
+          <span>Auto-sliding every 15s</span>
+        </div>`;
+
+      // 1. EVENT INFORMATION LAYOUT
+      if (notice.entryType === "event") {
+        const imageHeader = notice.imageData 
+          ? `<div class="header-poster-container"><img src="${notice.imageData}" alt="Event Banner/Poster" /></div>` 
+          : "";
+
+        htmlContent = `
+          ${headerStripe}
+          ${imageHeader}
+          <div class="card-body">
+            <h2 class="notice-title" style="color: var(--iitr-navy);">${notice.title}</h2>
+            <div class="notice-meta">${notice.meta}</div>
+            <div class="notice-content">${notice.content}</div>
+          </div>
+          ${cardFooter}`;
+      } 
+      // 2. BIODATA / RESUME LAYOUT
+      else if (notice.entryType === "biodata") {
+        const photoSrc = notice.imageData || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='190' viewBox='0 0 160 190'><rect width='100%' height='100%' fill='%23cccccc'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23555555'>No Photo</text></svg>";
+        
+        htmlContent = `
+          ${headerStripe}
+          <div class="card-body">
+            <div class="biodata-layout">
+              <div class="biodata-sidebar">
+                <img src="${photoSrc}" class="biodata-photo" alt="Profile Photo" />
+                <div class="biodata-name">${notice.title}</div>
+                <div class="biodata-role">${notice.role || 'Official'}</div>
+              </div>
+              <div class="biodata-main">
+                <div class="bio-section">
+                  <h4>Official Details & Designation</h4>
+                  <p>${notice.meta}</p>
+                </div>
+                <div class="bio-section">
+                  <h4>Profile & Responsibilities</h4>
+                  <p>${notice.bioSummary || notice.content}</p>
+                </div>
+                <div class="bio-section">
+                  <h4>Contact & Interaction Hours</h4>
+                  <p>${notice.contactInfo || 'N/A'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          ${cardFooter}`;
+      } 
+      // 3. NOTICE LAYOUT (Standard Text + Optional Header Image)
+      else {
+        const optionalImageHeader = notice.imageData 
+          ? `<div class="header-poster-container"><img src="${notice.imageData}" alt="Notice Header Attachment" /></div>` 
+          : "";
+
+        htmlContent = `
+          ${headerStripe}
+          ${optionalImageHeader}
+          <div class="card-body">
+            <h2 class="notice-title">${notice.title}</h2>
+            <div class="notice-meta">${notice.meta}</div>
+            <div class="notice-content">${notice.content}</div>
+          </div>
+          ${cardFooter}`;
+      }
+
+      noticeCard.innerHTML = htmlContent;
+      renderDots();
+      resetProgressBar();
+    }
+
+    // Dots Navigation
+    function renderDots() {
+      indicatorDots.innerHTML = "";
+      notices.forEach((_, index) => {
+        const dot = document.createElement("div");
+        dot.className = `dot ${index === currentIndex ? 'active' : ''}`;
+        dot.onclick = () => jumpToSlide(index);
+        indicatorDots.appendChild(dot);
+      });
+    }
+
+    // Auto-Slide Logic
+    function startAutoSlide() {
+      clearInterval(slideInterval);
+      clearInterval(progressTimer);
+
+      let startTime = Date.now();
+      
+      progressTimer = setInterval(() => {
+        let elapsed = Date.now() - startTime;
+        let percentage = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+        progressBar.style.width = percentage + "%";
+      }, 100);
+
+      slideInterval = setInterval(() => {
+        nextSlide();
+      }, SLIDE_DURATION);
+    }
+
+    function resetProgressBar() {
+      progressBar.style.width = "0%";
+    }
+
+    function nextSlide() {
+      if (notices.length === 0) return;
+      currentIndex = (currentIndex + 1) % notices.length;
+      renderNotice();
+      startAutoSlide();
+    }
+
+    function prevSlide() {
+      if (notices.length === 0) return;
+      currentIndex = (currentIndex - 1 + notices.length) % notices.length;
+      renderNotice();
+      startAutoSlide();
+    }
+
+    function jumpToSlide(index) {
+      currentIndex = index;
+      renderNotice();
+      startAutoSlide();
+    }
+
+    // Full Screen Toggle
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+          document.body.classList.add("is-fullscreen");
+        }).catch(err => {
+          alert(`Fullscreen error: ${err.message}`);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener("fullscreenchange", () => {
+      if (!document.fullscreenElement) {
+        document.body.classList.remove("is-fullscreen");
+      }
+    });
+
+    // Password & Admin Panel
+    function openAdminModal() {
+      document.getElementById("adminPassword").value = "";
+      document.getElementById("passwordError").style.display = "none";
+      document.getElementById("passwordModal").classList.add("active");
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove("active");
+    }
+
+    function verifyPassword() {
+      const pass = document.getElementById("adminPassword").value;
+      if (pass === ADMIN_PASS) {
+        closeModal("passwordModal");
+        openAdminPanel();
+      } else {
+        document.getElementById("passwordError").style.display = "block";
+      }
+    }
+
+    function openAdminPanel() {
+      renderAdminList();
+      resetForm();
+      document.getElementById("adminPanelModal").classList.add("active");
+    }
+
+    // Dynamic Form Switcher based on Entry Type Selection
+    function handleEntryTypeChange() {
+      const type = document.getElementById("inputEntryType").value;
+      const fieldsContainer = document.getElementById("dynamicFields");
+      const imageLabel = document.getElementById("imageUploadLabel");
+      const imageHelp = document.getElementById("imageHelpText");
+
+      if (type === "event") {
+        imageLabel.innerHTML = "Upload Event Header Poster / Banner Image:";
+        imageHelp.innerText = "Recommended: High resolution landscape poster (will be displayed on header of notice slide).";
+        fieldsContainer.innerHTML = `
+          <div class="form-group">
+            <label>Event Category / Tag:</label>
+            <input type="text" id="inputCategory" class="form-control" value="Upcoming Event" />
+          </div>
+          <div class="form-group">
+            <label>Event Title:</label>
+            <input type="text" id="inputTitle" class="form-control" placeholder="e.g. Inter-Bhawan Sports League 2026" />
+          </div>
+          <div class="form-group">
+            <label>Date & Venue Details:</label>
+            <input type="text" id="inputMeta" class="form-control" placeholder="e.g. Date: 22nd Oct | Venue: Bhawan Grounds" />
+          </div>
+          <div class="form-group">
+            <label>Event Description & Highlights:</label>
+            <textarea id="inputContent" class="form-control" placeholder="Enter key rules, schedule, registration link/contacts..."></textarea>
+          </div>`;
+      } 
+      else if (type === "biodata") {
+        imageLabel.innerHTML = "Upload Profile Photo:";
+        imageHelp.innerText = "Required/Recommended: Official passport photo or clear headshot.";
+        fieldsContainer.innerHTML = `
+          <div class="form-group">
+            <label>Full Name:</label>
+            <input type="text" id="inputTitle" class="form-control" placeholder="e.g. Dr. A. K. Sharma" />
+          </div>
+          <div class="form-group">
+            <label>Official Role / Designation:</label>
+            <input type="text" id="inputRole" class="form-control" placeholder="e.g. Chief Warden / Assistant Warden / General Secretary" />
+          </div>
+          <div class="form-group">
+            <label>Office Location & Hours:</label>
+            <input type="text" id="inputMeta" class="form-control" placeholder="e.g. Warden Office, Ground Floor | Mon-Fri 5:00-6:30 PM" />
+          </div>
+          <div class="form-group">
+            <label>Profile & Responsibilities (Resume Summary):</label>
+            <textarea id="inputBio" class="form-control" placeholder="Enter qualifications, department, and primary responsibilities..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Contact Information:</label>
+            <textarea id="inputContact" class="form-control" placeholder="e.g. Phone: +91 1332 28XXXX | Email: warden@iitr.ac.in"></textarea>
+          </div>`;
+      } 
+      else { // Notice
+        imageLabel.innerHTML = "Upload Notice Header Image / Attachment (Optional):";
+        imageHelp.innerText = "Optional: Upload an accompanying document image or header banner if needed.";
+        fieldsContainer.innerHTML = `
+          <div class="form-group">
+            <label>Notice Category Tag:</label>
+            <input type="text" id="inputCategory" class="form-control" value="Official Notice" />
+          </div>
+          <div class="form-group">
+            <label>Notice Title:</label>
+            <input type="text" id="inputTitle" class="form-control" placeholder="e.g. Mess Guidelines for Mid-Term Examination Week" />
+          </div>
+          <div class="form-group">
+            <label>Issuing Authority & Date:</label>
+            <input type="text" id="inputMeta" class="form-control" placeholder="e.g. Issued by: Chief Warden | Date: 14 Oct" />
+          </div>
+          <div class="form-group">
+            <label>Notice Content Body:</label>
+            <textarea id="inputContent" class="form-control" placeholder="Write full notice details..."></textarea>
+          </div>`;
+      }
+    }
+
+    // Handle Image File Upload Conversion to Base64
+    function previewImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          currentBase64Image = e.target.result;
+          document.getElementById("previewImg").src = currentBase64Image;
+          document.getElementById("previewBox").style.display = "block";
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function removeImage() {
+      currentBase64Image = "";
+      document.getElementById("inputImage").value = "";
+      document.getElementById("previewImg").src = "";
+      document.getElementById("previewBox").style.display = "none";
+    }
+
+    // Save or Update Entry
+    function saveNotice() {
+      const entryType = document.getElementById("inputEntryType").value;
+      const editId = document.getElementById("editNoticeId").value;
+      const title = document.getElementById("inputTitle") ? document.getElementById("inputTitle").value.trim() : "";
+
+      if (!title) {
+        alert("Please provide a Title / Name for this slide.");
+        return;
+      }
+
+      let newNoticeObj = {
+        id: editId ? parseInt(editId) : Date.now(),
+        entryType: entryType,
+        title: title,
+        imageData: currentBase64Image
+      };
+
+      if (entryType === "event") {
+        newNoticeObj.category = document.getElementById("inputCategory").value || "Upcoming Event";
+        newNoticeObj.meta = document.getElementById("inputMeta").value || "";
+        newNoticeObj.content = document.getElementById("inputContent").value || "";
+      } else if (entryType === "biodata") {
+        newNoticeObj.category = "Official Biodata";
+        newNoticeObj.role = document.getElementById("inputRole").value || "Official";
+        newNoticeObj.meta = document.getElementById("inputMeta").value || "";
+        newNoticeObj.bioSummary = document.getElementById("inputBio").value || "";
+        newNoticeObj.contactInfo = document.getElementById("inputContact").value || "";
+      } else { // notice
+        newNoticeObj.category = document.getElementById("inputCategory").value || "Official Notice";
+        newNoticeObj.meta = document.getElementById("inputMeta").value || "";
+        newNoticeObj.content = document.getElementById("inputContent").value || "";
+      }
+
+      if (editId) {
+        const idx = notices.findIndex(n => n.id == editId);
+        if (idx !== -1) notices[idx] = newNoticeObj;
+      } else {
+        notices.push(newNoticeObj);
+      }
+
+      localStorage.setItem("rajendra_notices_v2", JSON.stringify(notices));
+      renderAdminList();
+      resetForm();
+      renderNotice();
+      startAutoSlide();
+    }
+
+    function renderAdminList() {
+      const listContainer = document.getElementById("adminNoticeList");
+      listContainer.innerHTML = "";
+
+      if (notices.length === 0) {
+        listContainer.innerHTML = "<p style='color: #777;'>No slides active.</p>";
+        return;
+      }
+
+      notices.forEach((n) => {
+        const item = document.createElement("div");
+        item.className = "notice-item";
+        item.innerHTML = `
+          <div>
+            <span class="badge-type">${n.entryType.toUpperCase()}</span>
+            <strong>${n.title}</strong>
+          </div>
+          <div style="display: flex; gap: 0.4rem;">
+            <button class="btn btn-secondary btn-sm" onclick="editNotice(${n.id})">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteNotice(${n.id})">Delete</button>
+          </div>`;
+        listContainer.appendChild(item);
+      });
+    }
+
+    function editNotice(id) {
+      const target = notices.find(n => n.id === id);
+      if (!target) return;
+
+      document.getElementById("editNoticeId").value = target.id;
+      document.getElementById("inputEntryType").value = target.entryType;
+      handleEntryTypeChange();
+
+      document.getElementById("inputTitle").value = target.title || "";
+      if (target.entryType === "event" || target.entryType === "notice") {
+        if (document.getElementById("inputCategory")) document.getElementById("inputCategory").value = target.category || "";
+        if (document.getElementById("inputMeta")) document.getElementById("inputMeta").value = target.meta || "";
+        if (document.getElementById("inputContent")) document.getElementById("inputContent").value = target.content || "";
+      } else if (target.entryType === "biodata") {
+        if (document.getElementById("inputRole")) document.getElementById("inputRole").value = target.role || "";
+        if (document.getElementById("inputMeta")) document.getElementById("inputMeta").value = target.meta || "";
+        if (document.getElementById("inputBio")) document.getElementById("inputBio").value = target.bioSummary || "";
+        if (document.getElementById("inputContact")) document.getElementById("inputContact").value = target.contactInfo || "";
+      }
+
+      currentBase64Image = target.imageData || "";
+      if (currentBase64Image) {
+        document.getElementById("previewImg").src = currentBase64Image;
+        document.getElementById("previewBox").style.display = "block";
+      } else {
+        removeImage();
+      }
+
+      document.getElementById("formHeaderTitle").innerText = "Edit Slide";
+      document.getElementById("saveNoticeBtn").innerText = "Update & Save Slide";
+      document.getElementById("cancelEditBtn").style.display = "inline-block";
+    }
+
+    function resetForm() {
+      document.getElementById("editNoticeId").value = "";
+      document.getElementById("inputEntryType").selectedIndex = 0;
+      handleEntryTypeChange();
+      removeImage();
+
+      document.getElementById("formHeaderTitle").innerText = "Add New Slide";
+      document.getElementById("saveNoticeBtn").innerText = "Save & Publish Slide";
+      document.getElementById("cancelEditBtn").style.display = "none";
+    }
+
+    function deleteNotice(id) {
+      if (confirm("Are you sure you want to delete this slide?")) {
+        notices = notices.filter(n => n.id !== id);
+        localStorage.setItem("rajendra_notices_v2", JSON.stringify(notices));
+        if (currentIndex >= notices.length) {
+          currentIndex = Math.max(0, notices.length - 1);
+        }
+        renderAdminList();
+        renderNotice();
+        startAutoSlide();
+      }
+    }
+
+    // Start App
+    window.onload = function() {
+      init();
+      handleEntryTypeChange();
+    };
+  </script>
+</body>
+</html>
